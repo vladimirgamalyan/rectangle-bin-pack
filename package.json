@@ -3,7 +3,8 @@
   "version": "0.0.2",
   "description": "rectangle-bin-pack",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "should": "~2.1.1",
     "mocha": "~1.15.1"
@@ -26,5 +27,6 @@
   },
   "engines": {
     "node": ">=0.8"
-  }
+  },
+  "gypfile": true
 }
