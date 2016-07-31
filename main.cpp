@@ -1,4 +1,6 @@
 #include <node.h>
+//#include <vector>
+#include "MaxRectsBinPack.h"
 
 using namespace v8;
 
@@ -18,6 +20,8 @@ void Solve(const FunctionCallbackInfo<Value>& args) {
 	}
 	Local<Array> arr = Local<Array>::Cast(args[0]);
 	uint32_t len = arr->Length();
+
+	std::vector<rbp::RectSize> rects;
 
 	for (uint32_t i = 0; i < len; ++i) {
 		Local<Value> item = arr->Get(i);
@@ -45,11 +49,30 @@ void Solve(const FunctionCallbackInfo<Value>& args) {
 			return;
 		}
 
-		uint32_t x = 0;
-		uint32_t y = 0;
+		rbp::RectSize r;
+		r.width = static_cast<int>(width);
+		r.height = static_cast<int>(height);
+		r.tag = static_cast<int>(i);
+		rects.push_back(r);
+	}
 
-		obj->Set(String::NewFromUtf8(isolate, "x"), Uint32::New(isolate, x));
-		obj->Set(String::NewFromUtf8(isolate, "y"), Uint32::New(isolate, y));
+	if (rects.size()) {
+		rbp::MaxRectsBinPack mrbp(2048, 2048);
+		std::vector<rbp::Rect> readyRects;
+		size_t origSize = rects.size();
+		mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
+		if (readyRects.size() != origSize) {
+			isolate->ThrowException(Exception::TypeError(
+				String::NewFromUtf8(isolate, "Internal error")));
+			return;
+		}
+
+		for (uint32_t i = 0; i < origSize; ++i) {
+			const rbp::Rect& r = readyRects[i];
+			Local<Object> obj = arr->Get(r.tag)->ToObject();
+			obj->Set(String::NewFromUtf8(isolate, "x"), Uint32::New(isolate, r.x));
+			obj->Set(String::NewFromUtf8(isolate, "y"), Uint32::New(isolate, r.y));
+		}
 	}
 }
 
