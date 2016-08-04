@@ -1,51 +1,96 @@
-#include <node.h>
-//#include <vector>
+#include <nan.h>
 #include "MaxRectsBinPack.h"
 
-using namespace v8;
+class Worker : public Nan::AsyncWorker {
+public:
+	Worker(std::vector<rbp::RectSize> rects, Nan::Callback *callback) : AsyncWorker(callback), rects(rects) {}
 
-void Solve(const FunctionCallbackInfo<Value>& args) {
-	Isolate* isolate = args.GetIsolate();
+	void Execute() {
+		if (rects.size()) {
+			rbp::MaxRectsBinPack mrbp(2048, 2048);
+			size_t origSize = rects.size();
+			mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
+			if (readyRects.size() != origSize) {
+				//Nan::ThrowError("internal error");
+				//return;
+			}
+		}
+	}
 
-	if (args.Length() < 1) {
-		isolate->ThrowException(Exception::TypeError(
-			String::NewFromUtf8(isolate, "Wrong number of arguments")));
+	// We have the results, and we're back in the event loop.
+	void HandleOKCallback() {
+		Nan::HandleScope scope;
+
+		uint32_t size = static_cast<uint32_t>(readyRects.size());
+		v8::Local<v8::Array> result = Nan::New<v8::Array>(size);
+
+		for (uint32_t i = 0; i < size; ++i) {
+			const rbp::Rect& r = readyRects[i];
+			v8::Local<v8::Object> obj = Nan::New<v8::Object>();
+			Nan::Set(obj, Nan::New("x").ToLocalChecked(), Nan::New<v8::Uint32>(r.x));
+			Nan::Set(obj, Nan::New("y").ToLocalChecked(), Nan::New<v8::Uint32>(r.y));
+			Nan::Set(obj, Nan::New("i").ToLocalChecked(), Nan::New<v8::Uint32>(r.tag));
+			Nan::Set(result, i, obj);
+		}
+
+		v8::Local<v8::Value> argv[] = {
+			Nan::Null(),
+			result
+		};
+
+		callback->Call(2, argv);
+	}
+
+private:
+	std::vector<rbp::RectSize> rects;
+	std::vector<rbp::Rect> readyRects;
+};
+
+NAN_METHOD(solve) {
+
+	if (info.Length() < 2) {
+		Nan::ThrowError("not enough arguments");
 		return;
 	}
 
-	if (!args[0]->IsArray()) {
-		isolate->ThrowException(Exception::TypeError(
-			String::NewFromUtf8(isolate, "Wrong arguments")));
+	if (!info[0]->IsArray()) {
+		Nan::ThrowError("first argument is not an array");
 		return;
 	}
-	Local<Array> arr = Local<Array>::Cast(args[0]);
+
+	if (!info[1]->IsFunction()) {
+		Nan::ThrowError("second argument is not a function");
+		return;
+	}
+
+	v8::Local<v8::Array> arr = info[0].As<v8::Array>();
 	uint32_t len = arr->Length();
 
 	std::vector<rbp::RectSize> rects;
 
 	for (uint32_t i = 0; i < len; ++i) {
-		Local<Value> item = arr->Get(i);
+		v8::Local<v8::Value> item = Nan::Get(arr, i).ToLocalChecked();
+
 		if (!item->IsObject()) {
-			isolate->ThrowException(Exception::TypeError(
-				String::NewFromUtf8(isolate, "Wrong arguments")));
+			Nan::ThrowError("element of array must be an object");
 			return;
 		}
-		Local<Object> obj = item->ToObject();
-		Local<Value> w = obj->Get(String::NewFromUtf8(isolate, "w"));
-		Local<Value> h = obj->Get(String::NewFromUtf8(isolate, "h"));
+		v8::Local<v8::Object> obj = Nan::To<v8::Object>(item).ToLocalChecked();
+
+		v8::Local<v8::Value> w = Nan::Get(obj, Nan::New<v8::String>("w").ToLocalChecked()).ToLocalChecked();
+		v8::Local<v8::Value> h = Nan::Get(obj, Nan::New<v8::String>("h").ToLocalChecked()).ToLocalChecked();
 
 		// 0..0xffffffff only
 		if ((!w->IsUint32()) || (!h->IsUint32())) {
-			isolate->ThrowException(Exception::TypeError(
-				String::NewFromUtf8(isolate, "Wrong arguments")));
+			Nan::ThrowError("dimension is not a number");
 			return;
 		}
-		uint32_t width = w->Uint32Value();
-		uint32_t height = h->Uint32Value();
+
+		uint32_t width = Nan::To<uint32_t>(w).FromJust();
+		uint32_t height = Nan::To<uint32_t>(h).FromJust();
 
 		if ((!width) || (!height) || (width > 0xffff) || (height > 0xffff)) {
-			isolate->ThrowException(Exception::TypeError(
-				String::NewFromUtf8(isolate, "Wrong arguments")));
+			Nan::ThrowError("invalid dimension");
 			return;
 		}
 
@@ -56,28 +101,14 @@ void Solve(const FunctionCallbackInfo<Value>& args) {
 		rects.push_back(r);
 	}
 
-	if (rects.size()) {
-		rbp::MaxRectsBinPack mrbp(2048, 2048);
-		std::vector<rbp::Rect> readyRects;
-		size_t origSize = rects.size();
-		mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
-		if (readyRects.size() != origSize) {
-			isolate->ThrowException(Exception::TypeError(
-				String::NewFromUtf8(isolate, "Internal error")));
-			return;
-		}
+	Nan::Callback* callback = new Nan::Callback(info[1].As<v8::Function>());
 
-		for (uint32_t i = 0; i < origSize; ++i) {
-			const rbp::Rect& r = readyRects[i];
-			Local<Object> obj = arr->Get(r.tag)->ToObject();
-			obj->Set(String::NewFromUtf8(isolate, "x"), Uint32::New(isolate, r.x));
-			obj->Set(String::NewFromUtf8(isolate, "y"), Uint32::New(isolate, r.y));
-		}
-	}
+	Nan::AsyncQueueWorker(new Worker(rects, callback));
 }
 
-void init(Local<Object> exports) {
-	NODE_SET_METHOD(exports, "solve", Solve);
+NAN_MODULE_INIT(init) {
+	Nan::Set(target, Nan::New<v8::String>("solve").ToLocalChecked(),
+		Nan::GetFunction(Nan::New<v8::FunctionTemplate>(solve)).ToLocalChecked());
 }
 
 NODE_MODULE(rectangle_bin_pack, init)

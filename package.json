@@ -3,10 +3,10 @@
   "version": "0.0.6",
   "description": "rectangle-bin-pack",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "nan": "^2.4.0"
+  },
   "devDependencies": {
-    "should": "~2.1.1",
-    "mocha": "~1.15.1"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha"

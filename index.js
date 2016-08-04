@@ -1,4 +1,4 @@
-const addon = require('./build/Release/rectangle_bin_pack');
+const rectangleBinPack = require('./build/Release/rectangle_bin_pack');
 
 var a = [{
 	w: 12,
@@ -11,5 +11,6 @@ var a = [{
 	h: 24
 }];
 
-addon.solve(a);
-console.log(a);
+rectangleBinPack.solve(a, (err, result) => {
+	console.log(result);	
+});
