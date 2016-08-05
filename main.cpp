@@ -14,6 +14,8 @@ public:
 				//Nan::ThrowError("internal error");
 				//return;
 			}
+
+			std::sort(readyRects.begin(), readyRects.end(), sortCompare);
 		}
 	}
 
@@ -29,7 +31,7 @@ public:
 			v8::Local<v8::Object> obj = Nan::New<v8::Object>();
 			Nan::Set(obj, Nan::New("x").ToLocalChecked(), Nan::New<v8::Uint32>(r.x));
 			Nan::Set(obj, Nan::New("y").ToLocalChecked(), Nan::New<v8::Uint32>(r.y));
-			Nan::Set(obj, Nan::New("i").ToLocalChecked(), Nan::New<v8::Uint32>(r.tag));
+			//Nan::Set(obj, Nan::New("i").ToLocalChecked(), Nan::New<v8::Uint32>(r.tag));
 			Nan::Set(result, i, obj);
 		}
 
@@ -42,6 +44,9 @@ public:
 	}
 
 private:
+	static bool sortCompare(rbp::Rect a, rbp::Rect b) {
+		return (a.tag < b.tag);
+	}
 	std::vector<rbp::RectSize> rects;
 	std::vector<rbp::Rect> readyRects;
 };
