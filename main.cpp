@@ -1,13 +1,26 @@
 #include <nan.h>
 #include "MaxRectsBinPack.h"
 
+const char* ERR_NOT_ENOUGH_ARGUMENTS = "not enough arguments";
+const char* FIRST_ARGUMENT_IS_NOT_AN_OBJECT = "first argument is not an object";
+const char* SECOND_ARGUMENT_IS_NOT_AN_ARRAY = "second argument is not an array";
+const char* THIRD_ARGUMENT_IS_NOT_A_FUNCTION = "third argument is not a function";
+//TODO: other strings
+
+struct Options
+{
+	uint32_t width = 2048;
+	uint32_t height = 2048;
+};
+
 class Worker : public Nan::AsyncWorker {
 public:
-	Worker(std::vector<rbp::RectSize> rects, Nan::Callback *callback) : AsyncWorker(callback), rects(rects) {}
+	Worker(std::vector<rbp::RectSize> rects, Options options, Nan::Callback *callback) :
+		rects(rects), options(options), AsyncWorker(callback) {}
 
 	void Execute() {
 		if (rects.size()) {
-			rbp::MaxRectsBinPack mrbp(2048, 2048);
+			rbp::MaxRectsBinPack mrbp(options.width, options.height);
 			size_t origSize = rects.size();
 			mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
 			if (readyRects.size() != origSize) {
@@ -47,8 +60,32 @@ private:
 		return (a.tag < b.tag);
 	}
 	std::vector<rbp::RectSize> rects;
+	Options options;
 	std::vector<rbp::Rect> readyRects;
 };
+
+std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) {
+
+	//TODO: check options.width and options.height values
+
+	v8::Local<v8::Value> width = Nan::Get(obj, Nan::New<v8::String>("width").ToLocalChecked()).ToLocalChecked();
+	if (!width->IsUndefined()) {
+		if (!width->IsUint32()) {
+			return "invalid width option";
+		}
+		options.width = Nan::To<uint32_t>(width).FromJust();
+	}
+
+	v8::Local<v8::Value> height = Nan::Get(obj, Nan::New<v8::String>("height").ToLocalChecked()).ToLocalChecked();
+	if (!height->IsUndefined()) {
+		if (!height->IsUint32()) {
+			return "invalid height option";
+		}
+		options.height = Nan::To<uint32_t>(width).FromJust();
+	}
+
+	return "";
+}
 
 std::string parseArrayArg(const v8::Local<v8::Array>& arr, std::vector<rbp::RectSize>& rects) {
 	Nan::HandleScope scope;
@@ -88,50 +125,80 @@ std::string parseArrayArg(const v8::Local<v8::Array>& arr, std::vector<rbp::Rect
 
 NAN_METHOD(solve) {
 
-	if (info.Length() < 2) {
-		Nan::ThrowError("not enough arguments");
+	if (info.Length() < 3) {
+		Nan::ThrowError(ERR_NOT_ENOUGH_ARGUMENTS);
 		return;
 	}
 
-	if (!info[0]->IsArray()) {
-		Nan::ThrowError("first argument is not an array");
+	if (!info[0]->IsObject()) {
+		Nan::ThrowError(FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		return;
 	}
 
-	if (!info[1]->IsFunction()) {
-		Nan::ThrowError("second argument is not a function");
+	if (!info[1]->IsArray()) {
+		Nan::ThrowError(SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 		return;
 	}
 
-	v8::Local<v8::Array> arr = info[0].As<v8::Array>();
-	std::vector<rbp::RectSize> rects;
-	std::string err = parseArrayArg(arr, rects);
+	if (!info[2]->IsFunction()) {
+		Nan::ThrowError(THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
+		return;
+	}
+
+	Options options;
+	v8::Local<v8::Object> optionsObj = info[0].As<v8::Object>();
+	std::string err = parseOptionsArg(optionsObj, options);
 	if (!err.empty())
 	{
 		Nan::ThrowError(err.c_str());
 		return;
 	}
 
-	Nan::Callback* callback = new Nan::Callback(info[1].As<v8::Function>());
+	v8::Local<v8::Array> arr = info[1].As<v8::Array>();
+	std::vector<rbp::RectSize> rects;
+	//TODO: pass options and check width/height
+	err = parseArrayArg(arr, rects);
+	if (!err.empty())
+	{
+		Nan::ThrowError(err.c_str());
+		return;
+	}
+
+	Nan::Callback* callback = new Nan::Callback(info[2].As<v8::Function>());
 
 	//TODO: pass rects by move
-	Nan::AsyncQueueWorker(new Worker(rects, callback));
+	Nan::AsyncQueueWorker(new Worker(rects, options, callback));
 }
 
 NAN_METHOD(solveSync) {
-	if (info.Length() < 1) {
-		Nan::ThrowError("not enough arguments");
+	if (info.Length() < 2) {
+		Nan::ThrowError(ERR_NOT_ENOUGH_ARGUMENTS);
 		return;
 	}
 
-	if (!info[0]->IsArray()) {
-		Nan::ThrowError("first argument is not an array");
+	if (!info[0]->IsObject()) {
+		Nan::ThrowError(FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		return;
 	}
 
-	v8::Local<v8::Array> arr = info[0].As<v8::Array>();
+	if (!info[1]->IsArray()) {
+		Nan::ThrowError(SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+		return;
+	}
+
+	Options options;
+	v8::Local<v8::Object> optionsObj = info[0].As<v8::Object>();
+	std::string err = parseOptionsArg(optionsObj, options);
+	if (!err.empty())
+	{
+		Nan::ThrowError(err.c_str());
+		return;
+	}
+
+	v8::Local<v8::Array> arr = info[1].As<v8::Array>();
 	std::vector<rbp::RectSize> rects;
-	std::string err = parseArrayArg(arr, rects);
+	//TODO: pass options and check width/height
+	err = parseArrayArg(arr, rects);
 	if (!err.empty())
 	{
 		Nan::ThrowError(err.c_str());
@@ -140,7 +207,7 @@ NAN_METHOD(solveSync) {
 
 	std::vector<rbp::Rect> readyRects;
 	if (rects.size()) {
-		rbp::MaxRectsBinPack mrbp(2048, 2048);
+		rbp::MaxRectsBinPack mrbp(options.width, options.height);
 		size_t origSize = rects.size();
 		mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
 		if (readyRects.size() != origSize) {

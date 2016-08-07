@@ -15,5 +15,5 @@ var a = [{
 //	console.log(result);	
 //});
 
-console.log(rbp.solveSync(a));
+console.log(rbp.solveSync({}, a));
 console.log(a);
