@@ -9,6 +9,8 @@ const char* THIRD_ARGUMENT_IS_NOT_A_FUNCTION = "third argument is not a function
 
 struct Options
 {
+	rbp::MaxRectsBinPack::FreeRectChoiceHeuristic algorithm = rbp::MaxRectsBinPack::RectBestAreaFit;
+
 	uint32_t width = 2048;
 	uint32_t height = 2048;
 };
@@ -22,7 +24,7 @@ public:
 		if (rects.size()) {
 			rbp::MaxRectsBinPack mrbp(options.width, options.height);
 			size_t origSize = rects.size();
-			mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
+			mrbp.Insert(rects, readyRects, options.algorithm);
 			if (readyRects.size() != origSize) {
 				//Nan::ThrowError("internal error");
 				//return;
@@ -71,7 +73,7 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 	v8::Local<v8::Value> width = Nan::Get(obj, Nan::New<v8::String>("width").ToLocalChecked()).ToLocalChecked();
 	if (!width->IsUndefined()) {
 		if (!width->IsUint32()) {
-			return "invalid width option";
+			return "invalid width option value";
 		}
 		options.width = Nan::To<uint32_t>(width).FromJust();
 	}
@@ -79,9 +81,41 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 	v8::Local<v8::Value> height = Nan::Get(obj, Nan::New<v8::String>("height").ToLocalChecked()).ToLocalChecked();
 	if (!height->IsUndefined()) {
 		if (!height->IsUint32()) {
-			return "invalid height option";
+			return "invalid height option value";
 		}
 		options.height = Nan::To<uint32_t>(width).FromJust();
+	}
+
+	v8::Local<v8::Value> algorithm = Nan::Get(obj, Nan::New<v8::String>("algorithm").ToLocalChecked()).ToLocalChecked();
+	if (!algorithm->IsUndefined()) {
+		if (!algorithm->IsString()) {
+			return "invalid algorithm option value";
+		}
+
+		Nan::Utf8String algorithmUtf8String(algorithm);
+		if (!algorithmUtf8String.length()) {
+			return "empty algorithm option value";
+		}
+		
+		std::string algorithmString = *algorithmUtf8String;
+
+		if ((algorithmString == "BestShortSideFit") || (algorithmString == "BSSF")) {
+			options.algorithm = rbp::MaxRectsBinPack::RectBestShortSideFit;
+		}
+		else if ((algorithmString == "BestLongSideFit") || (algorithmString == "BLSF")) {
+			options.algorithm = rbp::MaxRectsBinPack::RectBestLongSideFit;
+		}
+		else if ((algorithmString == "BestAreaFit") || (algorithmString == "BAF")) {
+			options.algorithm = rbp::MaxRectsBinPack::RectBestAreaFit;
+		}
+		else if ((algorithmString == "BottomLeftRule") || (algorithmString == "BL")) {
+			options.algorithm = rbp::MaxRectsBinPack::RectBottomLeftRule;
+		}
+		else if ((algorithmString == "ContactPointRule") || (algorithmString == "CP")) {
+			options.algorithm = rbp::MaxRectsBinPack::RectContactPointRule;
+		} else {
+			return "unknown algorithm option value";
+		}
 	}
 
 	return "";
@@ -209,7 +243,7 @@ NAN_METHOD(solveSync) {
 	if (rects.size()) {
 		rbp::MaxRectsBinPack mrbp(options.width, options.height);
 		size_t origSize = rects.size();
-		mrbp.Insert(rects, readyRects, rbp::MaxRectsBinPack::RectBestAreaFit);
+		mrbp.Insert(rects, readyRects, options.algorithm);
 		if (readyRects.size() != origSize) {
 			//Nan::ThrowError("internal error");
 			//return;
