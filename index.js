@@ -15,13 +15,11 @@ var a = [{
 //	console.log(result);	
 //});
 
-console.log(rbp.solveSync({"algorithm": "BSSF"}, a));
-console.log(a);
-console.log(rbp.solveSync({"algorithm": "BLSF"}, a));
-console.log(a);
-console.log(rbp.solveSync({"algorithm": "BAF"}, a));
-console.log(a);
-console.log(rbp.solveSync({"algorithm": "BL"}, a));
-console.log(a);
-console.log(rbp.solveSync({"algorithm": "CP"}, a));
-console.log(a);
+try {
+	rbp.solve();
+} catch (e) {
+	console.log(e);
+}
+
+//console.log(rbp.solveSync({"algorithm": "BSSF"}, a));
+//console.log(a);

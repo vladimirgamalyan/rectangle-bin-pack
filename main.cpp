@@ -164,7 +164,7 @@ NAN_METHOD(solve) {
 		return;
 	}
 
-	if (!info[0]->IsObject()) {
+	if ((!info[0]->IsObject()) || (info[0]->IsArray())) {
 		Nan::ThrowError(FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		return;
 	}
@@ -210,7 +210,7 @@ NAN_METHOD(solveSync) {
 		return;
 	}
 
-	if (!info[0]->IsObject()) {
+	if ((!info[0]->IsObject()) || (info[0]->IsArray())) {
 		Nan::ThrowError(FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		return;
 	}

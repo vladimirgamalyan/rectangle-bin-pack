@@ -3,21 +3,57 @@ var rbp = require('../build/Release/rectangle_bin_pack');
 
 describe('rectangleBinPack', function () {
 	
-	it('basic call', function (done) {
-		rbp.solve({}, [{w:64, h:64}], function (err, res) {
-			expect(err).to.be.null;
-			expect(res).to.be.an('array').with.lengthOf(1);
-			expect(res).to.deep.equal([{x:0, y:0}]);
-			done();
+	describe('simple calls', function() {
+		
+		it('simple call', function (done) {
+			rbp.solve({}, [{w:64, h:64}], function (err, res) {
+				expect(err).to.be.null;
+				expect(res).to.be.an('array').with.lengthOf(1);
+				expect(res).to.deep.equal([{x:0, y:0}]);
+				done();
+			});
 		});
+		
+		it('two rectangles', function (done) {
+			rbp.solve({}, [{w:32, h:32}, {w:64, h:64}], function (err, res) {
+				expect(err).to.be.null;
+				expect(res).to.be.an('array').with.lengthOf(2);
+				expect(res).to.deep.equal([{x:0, y:64}, {x:0, y:0}]);
+				done();
+			});
+		});
+		
+		it('simple call sync', function () {
+			var a = [{w:64, h:64}];
+			var result = rbp.solveSync({}, a);
+			expect(result).to.be.ok;
+			expect(a).to.be.an('array').with.lengthOf(1);
+			expect(a).to.deep.equal([{x:0, y:0, w:64, h:64}]);
+		});
+	
 	});
 	
-	it('two rectangles', function (done) {
-		rbp.solve({}, [{w:32, h:32}, {w:64, h:64}], function (err, res) {
-			expect(err).to.be.null;
-			expect(res).to.be.an('array').with.lengthOf(2);
-			expect(res).to.deep.equal([{x:0, y:64}, {x:0, y:0}]);
-			done();
+	describe('exceptions', function() {
+		it('not enough arguments', function () {
+			expect(rbp.solveSync.bind(null)).to.throw('not enough arguments');
+			expect(rbp.solveSync.bind(null, {})).to.throw('not enough arguments');
+			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw('not enough arguments');
 		});
-	});	
+		
+		it('first argument is not an object', function () {
+			expect(rbp.solveSync.bind(null, true, [])).to.throw('first argument is not an object');
+			expect(rbp.solveSync.bind(null, 42, [])).to.throw('first argument is not an object');
+			expect(rbp.solveSync.bind(null, [], [])).to.throw('first argument is not an object');
+			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw('first argument is not an object');
+		});
+		
+		it('second argument is not an array', function () {
+			expect(rbp.solveSync.bind(null, {}, true)).to.throw('second argument is not an array');
+			expect(rbp.solveSync.bind(null, {}, 42)).to.throw('second argument is not an array');
+			expect(rbp.solveSync.bind(null, {}, {})).to.throw('second argument is not an array');
+			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw('second argument is not an array');
+		});
+		
+		//TODO: async version
+	});
 });
