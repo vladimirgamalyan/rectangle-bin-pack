@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack.svg?branch=master)](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack)
 
-![](http://imgur.com/g6sqBcB)
+![](http://i.imgur.com/g6sqBcB.png)
 
 # rectangle-bin-pack
 
