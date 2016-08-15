@@ -2,9 +2,9 @@
 #include "MaxRectsBinPack.h"
 
 const char* ERR_NOT_ENOUGH_ARGUMENTS = "not enough arguments";
-const char* FIRST_ARGUMENT_IS_NOT_AN_OBJECT = "first argument is not an object";
-const char* SECOND_ARGUMENT_IS_NOT_AN_ARRAY = "second argument is not an array";
-const char* THIRD_ARGUMENT_IS_NOT_A_FUNCTION = "third argument is not a function";
+const char* ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT = "first argument is not an object";
+const char* ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY = "second argument is not an array";
+const char* ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION = "third argument is not a function";
 //TODO: other strings
 
 struct Options
@@ -165,17 +165,17 @@ NAN_METHOD(solve) {
 	}
 
 	if ((!info[0]->IsObject()) || (info[0]->IsArray())) {
-		Nan::ThrowError(FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+		Nan::ThrowError(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		return;
 	}
 
 	if (!info[1]->IsArray()) {
-		Nan::ThrowError(SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+		Nan::ThrowError(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 		return;
 	}
 
 	if (!info[2]->IsFunction()) {
-		Nan::ThrowError(THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
+		Nan::ThrowError(ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
 		return;
 	}
 
@@ -211,12 +211,12 @@ NAN_METHOD(solveSync) {
 	}
 
 	if ((!info[0]->IsObject()) || (info[0]->IsArray())) {
-		Nan::ThrowError(FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+		Nan::ThrowError(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		return;
 	}
 
 	if (!info[1]->IsArray()) {
-		Nan::ThrowError(SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+		Nan::ThrowError(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 		return;
 	}
 

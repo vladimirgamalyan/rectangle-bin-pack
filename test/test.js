@@ -1,6 +1,11 @@
 var expect = require('chai').expect;
 var rbp = require('../build/Release/rectangle_bin_pack');
 
+var ERR_NOT_ENOUGH_ARGUMENTS = 'not enough arguments';
+var ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT = 'first argument is not an object';
+var ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY = 'second argument is not an array';
+var ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION = 'third argument is not a function';
+
 describe('rectangleBinPack', function () {
 	
 	describe('simple calls', function() {
@@ -43,54 +48,54 @@ describe('rectangleBinPack', function () {
 	
 	describe('exceptions', function() {
 		it('not enough arguments', function () {
-			expect(rbp.solve.bind(null)).to.throw('not enough arguments');
-			expect(rbp.solve.bind(null, {})).to.throw('not enough arguments');
-			expect(rbp.solve.bind(null, {}, [])).to.throw('not enough arguments');
-			expect(rbp.solve.bind(null, {}, [], null)).not.to.throw('not enough arguments');
+			expect(rbp.solve.bind(null)).to.throw(ERR_NOT_ENOUGH_ARGUMENTS);
+			expect(rbp.solve.bind(null, {})).to.throw(ERR_NOT_ENOUGH_ARGUMENTS);
+			expect(rbp.solve.bind(null, {}, [])).to.throw(ERR_NOT_ENOUGH_ARGUMENTS);
+			expect(rbp.solve.bind(null, {}, [], null)).not.to.throw(ERR_NOT_ENOUGH_ARGUMENTS);
 		});
 		
 
 		it('first argument is not an object', function () {
-			expect(rbp.solve.bind(null, true, [], null)).to.throw('first argument is not an object');
-			expect(rbp.solve.bind(null, 42, [], null)).to.throw('first argument is not an object');
-			expect(rbp.solve.bind(null, [], [], null)).to.throw('first argument is not an object');
-			expect(rbp.solve.bind(null, {}, [], null)).not.to.throw('first argument is not an object');
+			expect(rbp.solve.bind(null, true, [], null)).to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+			expect(rbp.solve.bind(null, 42, [], null)).to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+			expect(rbp.solve.bind(null, [], [], null)).to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+			expect(rbp.solve.bind(null, {}, [], null)).not.to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		});
 
 		it('second argument is not an array', function () {
-			expect(rbp.solve.bind(null, {}, true, null)).to.throw('second argument is not an array');
-			expect(rbp.solve.bind(null, {}, 42, null)).to.throw('second argument is not an array');
-			expect(rbp.solve.bind(null, {}, {}, null)).to.throw('second argument is not an array');
-			expect(rbp.solve.bind(null, {}, [], null)).not.to.throw('second argument is not an array');
+			expect(rbp.solve.bind(null, {}, true, null)).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+			expect(rbp.solve.bind(null, {}, 42, null)).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+			expect(rbp.solve.bind(null, {}, {}, null)).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+			expect(rbp.solve.bind(null, {}, [], null)).not.to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 		});
 		
 		it('third argument is not a function', function () {
-			expect(rbp.solve.bind(null, {}, [], null)).to.throw('third argument is not a function');
-			expect(rbp.solve.bind(null, {}, [], true)).to.throw('third argument is not a function');
-			expect(rbp.solve.bind(null, {}, [], 42)).to.throw('third argument is not a function');
-			expect(rbp.solve.bind(null, {}, [], [])).to.throw('third argument is not a function');
+			expect(rbp.solve.bind(null, {}, [], null)).to.throw(ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
+			expect(rbp.solve.bind(null, {}, [], true)).to.throw(ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
+			expect(rbp.solve.bind(null, {}, [], 42)).to.throw(ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
+			expect(rbp.solve.bind(null, {}, [], [])).to.throw(ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION);
 		});		
 	});
 	
 	describe('exceptions sync', function() {
 		it('not enough arguments', function () {
-			expect(rbp.solveSync.bind(null)).to.throw('not enough arguments');
-			expect(rbp.solveSync.bind(null, {})).to.throw('not enough arguments');
-			expect(rbp.solveSync.bind(null, {}, [])).not.throw('not enough arguments');
+			expect(rbp.solveSync.bind(null)).to.throw(ERR_NOT_ENOUGH_ARGUMENTS);
+			expect(rbp.solveSync.bind(null, {})).to.throw(ERR_NOT_ENOUGH_ARGUMENTS);
+			expect(rbp.solveSync.bind(null, {}, [])).not.throw(ERR_NOT_ENOUGH_ARGUMENTS);
 		});
 		
 		it('first argument is not an object', function () {
-			expect(rbp.solveSync.bind(null, true, [])).to.throw('first argument is not an object');
-			expect(rbp.solveSync.bind(null, 42, [])).to.throw('first argument is not an object');
-			expect(rbp.solveSync.bind(null, [], [])).to.throw('first argument is not an object');
-			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw('first argument is not an object');
+			expect(rbp.solveSync.bind(null, true, [])).to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+			expect(rbp.solveSync.bind(null, 42, [])).to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+			expect(rbp.solveSync.bind(null, [], [])).to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
+			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw(ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT);
 		});
 		
 		it('second argument is not an array', function () {
-			expect(rbp.solveSync.bind(null, {}, true)).to.throw('second argument is not an array');
-			expect(rbp.solveSync.bind(null, {}, 42)).to.throw('second argument is not an array');
-			expect(rbp.solveSync.bind(null, {}, {})).to.throw('second argument is not an array');
-			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw('second argument is not an array');
+			expect(rbp.solveSync.bind(null, {}, true)).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+			expect(rbp.solveSync.bind(null, {}, 42)).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+			expect(rbp.solveSync.bind(null, {}, {})).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
+			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 		});
 	});	
 });
