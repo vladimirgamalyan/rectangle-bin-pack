@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack.svg?branch=master)](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack)
 
+![](http://imgur.com/g6sqBcB)
+
 # rectangle-bin-pack
 
-Fast (in native c++) implementation of bin packing algorithm. Based on https://github.com/juj/RectangleBinPack.
+Fast (in native c++) implementation of bin packing algorithm for Node.js. Based on https://github.com/juj/RectangleBinPack.
 
 
 ## Information
@@ -33,7 +35,7 @@ $ npm install --save-dev rectangle-bin-pack
 ```js
 var rbp = require('rectangle_bin_pack');
 
-var arr = [{w:32, h:32}, {w:64, h:64}];
+var arr = [{w: 32, h: 32}, {w: 64, h: 64}];
 rbp.solveSync({"algorithm": "BSSF"}, arr);
 console.log(arr);
 
@@ -46,27 +48,26 @@ console.log(arr);
 
 ## API
 
-solveSync(options, rects);
+`solveSync(options, rects);`
 
 Pack rectangles from rects array in place.
 
 
-solve(options, rects, cb);
+`solve(options, rects, cb);`
 
 Pack rectangles and return new array in callback.
 
 
-options
+`options`
 
-width - width of bin
-height - height of bin
-algorithm - type of algorithm:
-	BestShortSideFit or BSSF
-	BestLongSideFit or BLSF
-	BestAreaFit or BAF
-	BottomLeftRule or BL
-	ContactPointRule or CP
-	
+- `width` - width of bin (default 2048)
+- `height` - height of bin (default 2048)
+- `algorithm` - type of algorithm:
+  - BestShortSideFit or BSSF
+  - BestLongSideFit or BLSF
+  - BestAreaFit or BAF (default)
+  - BottomLeftRule or BL
+  - ContactPointRule or CP
 
 
 ## LICENSE
