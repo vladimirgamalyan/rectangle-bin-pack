@@ -2,6 +2,73 @@
 
 # rectangle-bin-pack
 
+Fast (in native c++) implementation of bin packing algorithm. Based on https://github.com/juj/RectangleBinPack.
+
+
+## Information
+
+<table>
+<tr>
+<td>Package</td><td>rectangle-bin-pack</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Fast rect packer</td>
+</tr>
+<tr>
+<td>Node Version</td>
+<td>>= 0.10</td>
+</tr>
+</table>
+
+## Install
+
+```
+$ npm install --save-dev rectangle-bin-pack
+```
+
+
+## Usage
+
+```js
+var rbp = require('rectangle_bin_pack');
+
+var arr = [{w:32, h:32}, {w:64, h:64}];
+rbp.solveSync({"algorithm": "BSSF"}, arr);
+console.log(arr);
+
+```
+
+```
+[ { w: 32, h: 32, x: 0, y: 0 }, { w: 64, h: 64, x: 0, y: 64 } ]
+```
+
+
+## API
+
+solveSync(options, rects);
+
+Pack rectangles from rects array in place.
+
+
+solve(options, rects, cb);
+
+Pack rectangles and return new array in callback.
+
+
+options
+
+width - width of bin
+height - height of bin
+algorithm - type of algorithm:
+	BestShortSideFit or BSSF
+	BestLongSideFit or BLSF
+	BestAreaFit or BAF
+	BottomLeftRule or BL
+	ContactPointRule or CP
+	
+
+
 ## LICENSE
 
 The MIT License (MIT)
