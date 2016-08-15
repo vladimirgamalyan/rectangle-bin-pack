@@ -5,6 +5,13 @@ const char* ERR_NOT_ENOUGH_ARGUMENTS = "not enough arguments";
 const char* ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT = "first argument is not an object";
 const char* ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY = "second argument is not an array";
 const char* ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION = "third argument is not a function";
+
+const char* ERR_INVALID_WIDTH_OPTION_VALUE = "invalid width option value";
+const char* ERR_INVALID_HEIGHT_OPTION_VALUE = "invalid height option value";
+const char* ERR_INVALID_ALGORITHM_OPTION_VALUE = "invalid algorithm option value";
+const char* ERR_EMPTY_ALGORITHM_OPTION_VALUE = "empty algorithm option value";
+const char* ERR_UNKNOWN_ALGORITHM_OPTION_VALUE = "unknown algorithm option value";
+
 //TODO: other strings
 
 struct Options
@@ -73,7 +80,7 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 	v8::Local<v8::Value> width = Nan::Get(obj, Nan::New<v8::String>("width").ToLocalChecked()).ToLocalChecked();
 	if (!width->IsUndefined()) {
 		if (!width->IsUint32()) {
-			return "invalid width option value";
+			return ERR_INVALID_WIDTH_OPTION_VALUE;
 		}
 		options.width = Nan::To<uint32_t>(width).FromJust();
 	}
@@ -81,7 +88,7 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 	v8::Local<v8::Value> height = Nan::Get(obj, Nan::New<v8::String>("height").ToLocalChecked()).ToLocalChecked();
 	if (!height->IsUndefined()) {
 		if (!height->IsUint32()) {
-			return "invalid height option value";
+			return ERR_INVALID_HEIGHT_OPTION_VALUE;
 		}
 		options.height = Nan::To<uint32_t>(width).FromJust();
 	}
@@ -89,12 +96,12 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 	v8::Local<v8::Value> algorithm = Nan::Get(obj, Nan::New<v8::String>("algorithm").ToLocalChecked()).ToLocalChecked();
 	if (!algorithm->IsUndefined()) {
 		if (!algorithm->IsString()) {
-			return "invalid algorithm option value";
+			return ERR_INVALID_ALGORITHM_OPTION_VALUE;
 		}
 
 		Nan::Utf8String algorithmUtf8String(algorithm);
 		if (!algorithmUtf8String.length()) {
-			return "empty algorithm option value";
+			return ERR_EMPTY_ALGORITHM_OPTION_VALUE;
 		}
 		
 		std::string algorithmString = *algorithmUtf8String;
@@ -114,7 +121,7 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 		else if ((algorithmString == "ContactPointRule") || (algorithmString == "CP")) {
 			options.algorithm = rbp::MaxRectsBinPack::RectContactPointRule;
 		} else {
-			return "unknown algorithm option value";
+			return ERR_UNKNOWN_ALGORITHM_OPTION_VALUE;
 		}
 	}
 

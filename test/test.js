@@ -6,6 +6,12 @@ var ERR_FIRST_ARGUMENT_IS_NOT_AN_OBJECT = 'first argument is not an object';
 var ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY = 'second argument is not an array';
 var ERR_THIRD_ARGUMENT_IS_NOT_A_FUNCTION = 'third argument is not a function';
 
+var ERR_INVALID_WIDTH_OPTION_VALUE = "invalid width option value";
+var ERR_INVALID_HEIGHT_OPTION_VALUE = "invalid height option value";
+var ERR_INVALID_ALGORITHM_OPTION_VALUE = "invalid algorithm option value";
+var ERR_EMPTY_ALGORITHM_OPTION_VALUE = "empty algorithm option value";
+var ERR_UNKNOWN_ALGORITHM_OPTION_VALUE = "unknown algorithm option value";
+
 describe('rectangleBinPack', function () {
 	
 	describe('simple calls', function() {
@@ -97,5 +103,36 @@ describe('rectangleBinPack', function () {
 			expect(rbp.solveSync.bind(null, {}, {})).to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 			expect(rbp.solveSync.bind(null, {}, [])).not.to.throw(ERR_SECOND_ARGUMENT_IS_NOT_AN_ARRAY);
 		});
-	});	
+	});
+	
+	describe('options exceptions', function() {
+		
+		it('invalid witdh', function () {
+			expect(rbp.solveSync.bind(null, {width: null}, [])).to.throw(ERR_INVALID_WIDTH_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {width: true}, [])).to.throw(ERR_INVALID_WIDTH_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {width: 64}, [])).not.to.throw(ERR_INVALID_WIDTH_OPTION_VALUE);	
+		});
+		
+		it('invalid height', function () {
+			expect(rbp.solveSync.bind(null, {height: null}, [])).to.throw(ERR_INVALID_HEIGHT_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {height: true}, [])).to.throw(ERR_INVALID_HEIGHT_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {height: 64}, [])).not.to.throw(ERR_INVALID_HEIGHT_OPTION_VALUE);
+		});
+		
+		it('invalid algorithm', function () {
+			expect(rbp.solveSync.bind(null, {algorithm: null}, [])).to.throw(ERR_INVALID_ALGORITHM_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {algorithm: []}, [])).to.throw(ERR_INVALID_ALGORITHM_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {algorithm: 42}, [])).to.throw(ERR_INVALID_ALGORITHM_OPTION_VALUE);
+			expect(rbp.solveSync.bind(null, {algorithm: {}}, [])).to.throw(ERR_INVALID_ALGORITHM_OPTION_VALUE);
+		});
+		
+		it('empty algorithm', function () {
+			expect(rbp.solveSync.bind(null, {algorithm: ''}, [])).to.throw(ERR_EMPTY_ALGORITHM_OPTION_VALUE);
+		});	
+
+		it('empty algorithm', function () {
+			expect(rbp.solveSync.bind(null, {algorithm: 'foo'}, [])).to.throw(ERR_UNKNOWN_ALGORITHM_OPTION_VALUE);
+		});	
+		
+	});
 });
