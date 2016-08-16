@@ -39,7 +39,7 @@ $ npm install --save-dev rectangle-bin-pack
 var rbp = require('rectangle-bin-pack');
 
 var arr = [{w: 32, h: 32}, {w: 64, h: 64}];
-rbp.solveSync({"algorithm": "BSSF"}, arr);
+rbp.solveSync({algorithm: 'BSSF'}, arr);
 console.log(arr);
 
 ```

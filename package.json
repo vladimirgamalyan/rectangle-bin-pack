@@ -19,7 +19,10 @@
   },
   "keywords": [
     "rectangle",
-    "pack"
+	"binpack"
+    "pack",
+	"packer",
+	"texture"
   ],
   "author": "Vladimir Gamalian",
   "license": "MIT",
