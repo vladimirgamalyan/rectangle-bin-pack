@@ -1,6 +1,6 @@
 {
   "name": "rectangle-bin-pack",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "rectangle-bin-pack",
   "main": "index.js",
   "dependencies": {
@@ -19,10 +19,10 @@
   },
   "keywords": [
     "rectangle",
-	"binpack",
+    "binpack",
     "pack",
-	"packer",
-	"texture"
+    "packer",
+    "texture"
   ],
   "author": "Vladimir Gamalian",
   "license": "MIT",
