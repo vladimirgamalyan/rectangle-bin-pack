@@ -58,7 +58,7 @@ Pack rectangles from `rects` array in place. `rects` is an array of objects with
 
 `solve(options, rects, cb);`
 
-Pack rectangles and return new array in callback. Same as `solveSync`, but works asynchronously, ànd return an array of objects with two fields: `x` and `y`.
+Pack rectangles and return new array in callback. Same as `solveSync`, but works asynchronously, and return an array of objects with two fields: `x` and `y`.
 
 
 `options`
