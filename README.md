@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack.svg?branch=master)](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack)
+[![NPM version](https://img.shields.io/npm/v/rectangle-bin-pack.svg)](https://www.npmjs.com/package/rectangle-bin-pack)
+[![Node version](https://img.shields.io/node/v/rectangle-bin-pack.svg)](https://nodejs.org/)
+
 
 ![](http://i.imgur.com/g6sqBcB.png)
 
@@ -50,7 +53,7 @@ console.log(arr);
 
 `solveSync(options, rects);`
 
-Pack rectangles from rects array in place. `rects` is an array of objects with `w` (width) and `h` (height) fields (sure, the objects can have other fields as well). After successful execution, every object will have two additional fields: `x` and `y`.
+Pack rectangles from `rects` array in place. `rects` is an array of objects with `w` (width) and `h` (height) fields (sure, the objects can have other fields as well). After successful execution, every object will have two additional fields: `x` and `y`.
 
 
 `solve(options, rects, cb);`
@@ -62,10 +65,10 @@ Pack rectangles and return new array in callback. Same as `solveSync`, but works
 
 - `width` - width of bin (default 2048)
 - `height` - height of bin (default 2048)
-- `algorithm` - type of algorithm:
+- `algorithm` - type of algorithm (default BestAreaFit):
   - BestShortSideFit or BSSF
   - BestLongSideFit or BLSF
-  - BestAreaFit or BAF (default)
+  - BestAreaFit or BAF
   - BottomLeftRule or BL
   - ContactPointRule or CP
 
