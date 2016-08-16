@@ -1,4 +1,4 @@
-const rbp = require('./build/Release/rectangle_bin_pack');
+const rbp = require('./build/Release/rectangle-bin-pack');
 
 var a = [{
 	w: 10,

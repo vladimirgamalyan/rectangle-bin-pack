@@ -33,7 +33,7 @@ $ npm install --save-dev rectangle-bin-pack
 ## Usage
 
 ```js
-var rbp = require('rectangle_bin_pack');
+var rbp = require('rectangle-bin-pack');
 
 var arr = [{w: 32, h: 32}, {w: 64, h: 64}];
 rbp.solveSync({"algorithm": "BSSF"}, arr);
@@ -50,12 +50,12 @@ console.log(arr);
 
 `solveSync(options, rects);`
 
-Pack rectangles from rects array in place.
+Pack rectangles from rects array in place. `rects` is an array of objects with `w` (width) and `h` (height) fields (sure, the objects can have other fields as well). After successful execution, every object will have two additional fields: `x` and `y`.
 
 
 `solve(options, rects, cb);`
 
-Pack rectangles and return new array in callback.
+Pack rectangles and return new array in callback. Same as `solveSync`, but works asynchronously, ànd return an array of objects with two fields: `x` and `y`.
 
 
 `options`
