@@ -130,7 +130,7 @@ describe('rectangleBinPack', function () {
 			expect(rbp.solveSync.bind(null, {algorithm: ''}, [])).to.throw(ERR_EMPTY_ALGORITHM_OPTION_VALUE);
 		});	
 
-		it('empty algorithm', function () {
+		it('unknown algorithm', function () {
 			expect(rbp.solveSync.bind(null, {algorithm: 'foo'}, [])).to.throw(ERR_UNKNOWN_ALGORITHM_OPTION_VALUE);
 		});	
 		
