@@ -1,6 +1,6 @@
 {
   "name": "rectangle-bin-pack",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "rectangle-bin-pack",
   "main": "index.js",
   "dependencies": {
