@@ -38,14 +38,16 @@ $ npm install --save-dev rectangle-bin-pack
 ```js
 var rbp = require('rectangle-bin-pack');
 
-var arr = [{w: 32, h: 32}, {w: 64, h: 64}];
-rbp.solveSync({w: 64, h: 64, alg: 'BSSF'}, arr);
-console.log(arr);
+var a = [{w: 10, h: 10}, {w: 25, h: 25}, {w: 15,h: 15}];
+rbp.solveSync({w: 50, h: 25}, a);
+console.log(a);
 
 ```
 
 ```
-[ { w: 32, h: 32, x: 0, y: 0 }, { w: 64, h: 64, x: 0, y: 64 } ]
+[ { w: 10, h: 10, x: 0, y: 0 },
+  { w: 25, h: 25, x: 25, y: 0 },
+  { w: 15, h: 15, x: 25, y: 15 } ]
 ```
 
 
