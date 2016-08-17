@@ -38,7 +38,7 @@ $ npm install --save-dev rectangle-bin-pack
 ```js
 var rbp = require('rectangle-bin-pack');
 
-var a = [{w: 10, h: 10}, {w: 25, h: 25}, {w: 15,h: 15}];
+var a = [{w: 10, h: 10}, {w: 25, h: 25}, {w: 15, h: 15}];
 rbp.solveSync({w: 50, h: 25}, a);
 console.log(a);
 
