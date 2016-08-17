@@ -87,7 +87,7 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 	if (!height->IsUint32()) {
 		return ERR_INVALID_HEIGHT_OPTION_VALUE;
 	}
-	options.height = Nan::To<uint32_t>(width).FromJust();
+	options.height = Nan::To<uint32_t>(height).FromJust();
 
 	v8::Local<v8::Value> algorithm = Nan::Get(obj, Nan::New<v8::String>("alg").ToLocalChecked()).ToLocalChecked();
 	if (!algorithm->IsUndefined()) {
@@ -121,7 +121,7 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 		}
 	}
 
-	return "";
+	return std::string();
 }
 
 std::string parseArrayArg(const v8::Local<v8::Array>& arr, std::vector<rbp::RectSize>& rects) {
