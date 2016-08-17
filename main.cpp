@@ -18,8 +18,8 @@ struct Options
 {
 	rbp::MaxRectsBinPack::FreeRectChoiceHeuristic algorithm = rbp::MaxRectsBinPack::RectBestAreaFit;
 
-	uint32_t width = 2048;
-	uint32_t height = 2048;
+	uint32_t width = 0;
+	uint32_t height = 0;
 };
 
 class Worker : public Nan::AsyncWorker {
@@ -77,23 +77,19 @@ std::string parseOptionsArg(const v8::Local<v8::Object>& obj, Options& options) 
 
 	//TODO: check options.width and options.height values
 
-	v8::Local<v8::Value> width = Nan::Get(obj, Nan::New<v8::String>("width").ToLocalChecked()).ToLocalChecked();
-	if (!width->IsUndefined()) {
-		if (!width->IsUint32()) {
-			return ERR_INVALID_WIDTH_OPTION_VALUE;
-		}
-		options.width = Nan::To<uint32_t>(width).FromJust();
+	v8::Local<v8::Value> width = Nan::Get(obj, Nan::New<v8::String>("w").ToLocalChecked()).ToLocalChecked();
+	if (!width->IsUint32()) {
+		return ERR_INVALID_WIDTH_OPTION_VALUE;
 	}
+	options.width = Nan::To<uint32_t>(width).FromJust();
 
-	v8::Local<v8::Value> height = Nan::Get(obj, Nan::New<v8::String>("height").ToLocalChecked()).ToLocalChecked();
-	if (!height->IsUndefined()) {
-		if (!height->IsUint32()) {
-			return ERR_INVALID_HEIGHT_OPTION_VALUE;
-		}
-		options.height = Nan::To<uint32_t>(width).FromJust();
+	v8::Local<v8::Value> height = Nan::Get(obj, Nan::New<v8::String>("h").ToLocalChecked()).ToLocalChecked();
+	if (!height->IsUint32()) {
+		return ERR_INVALID_HEIGHT_OPTION_VALUE;
 	}
+	options.height = Nan::To<uint32_t>(width).FromJust();
 
-	v8::Local<v8::Value> algorithm = Nan::Get(obj, Nan::New<v8::String>("algorithm").ToLocalChecked()).ToLocalChecked();
+	v8::Local<v8::Value> algorithm = Nan::Get(obj, Nan::New<v8::String>("alg").ToLocalChecked()).ToLocalChecked();
 	if (!algorithm->IsUndefined()) {
 		if (!algorithm->IsString()) {
 			return ERR_INVALID_ALGORITHM_OPTION_VALUE;

@@ -39,7 +39,7 @@ $ npm install --save-dev rectangle-bin-pack
 var rbp = require('rectangle-bin-pack');
 
 var arr = [{w: 32, h: 32}, {w: 64, h: 64}];
-rbp.solveSync({algorithm: 'BSSF'}, arr);
+rbp.solveSync({w: 64, h: 64, algorithm: 'BSSF'}, arr);
 console.log(arr);
 
 ```
@@ -63,9 +63,9 @@ Pack rectangles and return new array in callback. Same as `solveSync`, but works
 
 `options`
 
-- `width` - width of bin (default 2048)
-- `height` - height of bin (default 2048)
-- `algorithm` - type of algorithm (default BestAreaFit):
+- `w` - width of bin (required)
+- `h` - height of bin (required)
+- `alg` - type of algorithm (default BestAreaFit):
   - BestShortSideFit or BSSF
   - BestLongSideFit or BLSF
   - BestAreaFit or BAF
