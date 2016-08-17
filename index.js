@@ -1,5 +1,5 @@
 const rbp = require('./build/Release/rectangle_bin_pack');
 
-var a = [{w: 10, h: 10}, {w: 25, h: 25}, {w: 15,h: 15}];
-rbp.solveSync({w: 50, h: 25}, a);
+var a = [{w: 10, h: 10}, {w: 60, h: 60}, {w: 10, h: 10}];
+rbp.solveSync({w: 50, h: 50}, a);
 console.log(a);
