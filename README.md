@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack.svg?branch=master)](https://travis-ci.org/vladimirgamalian/rectangle-bin-pack)
+[![Build Status](https://travis-ci.org/vladimirgamalyan/rectangle-bin-pack.svg?branch=master)](https://travis-ci.org/vladimirgamalyan/rectangle-bin-pack)
 [![NPM version](https://img.shields.io/npm/v/rectangle-bin-pack.svg)](https://www.npmjs.com/package/rectangle-bin-pack)
 [![Node version](https://img.shields.io/node/v/rectangle-bin-pack.svg)](https://nodejs.org/)
 
@@ -79,7 +79,7 @@ Pack rectangles and return new array in callback. Same as `solveSync`, but works
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Vladimir Gamalian
+Copyright (c) 2016 Vladimir Gamalyan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
